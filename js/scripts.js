@@ -20,6 +20,110 @@
 
 */
 
+document.addEventListener('DOMContentLoaded', function() {
+
+	var emptyall = document.getElementById("clear");
+	var myhistory = document.getElementById("history");
+	var equalto = document.getElementById("equals");
+
+	var btnblues = document.getElementsByClassName("btn-blue");
+	var btngrays = document.getElementsByClassName("btn-gray");
+
+	// add mouseover and mouseleave effects for buttons
+	for (i = 0; i < btnblues.length; i++) {
+		btnblues[i].addEventListener('mouseover', function() {
+			this.style.background = "LightSteelBlue";
+		}, false);
+	}
+
+	for (i = 0; i < btnblues.length; i++) {
+		btnblues[i].addEventListener('mouseleave', function() {
+			this.style.background = "#67A7CD";
+		}, false);
+	}
+
+	for (i = 0; i < btngrays.length; i++) {
+		btngrays[i].addEventListener('mouseover', function() {
+			this.style.background = "#999999";
+		}, false);
+	}
+
+	for (i = 0; i < btngrays.length; i++) {
+		btngrays[i].addEventListener('mouseleave', function() {
+			this.style.background = "#777777";
+		}, false);
+	}
+
+	for (i = 0; i < 10; i++) { // key events for the keys 0-9 (numpad too)
+		(function( i ) {
+            window.addEventListener('keypress', function(e) {
+                if (e.keyCode === 48 + i || e.keycode === 96 + i) {
+	        		operand(i);
+	        	}
+            }, false);
+        })( i );
+    }
+
+	window.addEventListener("keydown", function(e){ // key events for all the operator keys
+		switch(e.keyCode){
+			case e.shiftKey && 187 || 107:
+				operator('+');
+				break;
+			case 109: // the two "-" and "/" cases are currently separated, mysteriously not working with ||
+				operator('-');
+				break;
+			case 189:
+				operator('-');
+				break;
+			case e.shiftKey && 56 || 106:
+				operator('*');
+				break;
+			case 111:
+				operator('/');
+				break;
+			case 191:
+				operator('/');
+				break;
+			case 13 || 187:
+				equals(a, b, c);
+				break;
+		}
+	}, false);
+
+	var nums = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+
+	for (i = 0; i < 10; i++) { // click events for the number keys
+		(function( i ) {
+            document.getElementById(nums[i]).addEventListener('click', function() {
+            	operand(i);
+            }, false);
+        })( i );
+    }
+
+    // click events for the operator keys
+	document.getElementById("plus").addEventListener('click', function() {
+		operator('+');
+	}, false);
+
+	document.getElementById("minus").addEventListener('click', function() {
+		operator('-');
+	}, false);
+
+	document.getElementById("times").addEventListener('click', function() {
+		operator('*');
+	}, false);
+
+	document.getElementById("divided").addEventListener('click', function() {
+		operator('/');
+	}, false);
+
+	// click events for the rest of the keys
+	document.getElementById("clear").addEventListener('click', empty, false);
+	document.getElementById("history").addEventListener('click', history, false);
+	document.getElementById("equals").addEventListener('click', equals, false);
+
+}, false); // end dom content loaded
+
 
 function operand(n) { // define the operand function, has one parameter, n
 
@@ -69,7 +173,7 @@ function empty() {
 
 function history() {
 
-	var story = document.getElementById("history"); // local variable story, the history div
+	var story = document.getElementById("story"); // local variable story, the history div
 
 	if (story.style.display === 'block') { // if the history section is visible
 
@@ -82,7 +186,7 @@ function history() {
 	}
 }
 
-function equals(a, b, c) { // define the equals function, has three parameters, a, b, c
+function equals() { // define the equals function, has three parameters, a, b, c
 
 	var answer = "";
 	var a = document.getElementById("a").innerHTML; // local variable a, a string, is the first operand
@@ -111,7 +215,7 @@ function equals(a, b, c) { // define the equals function, has three parameters, 
 		document.getElementById("a").innerHTML = answer; // the first operand is set to the answer from the operation
 		document.getElementById("b").innerHTML = "Operator"; // the operator is set the the default value of "Operator"
 		document.getElementById("c").innerHTML = "Operand"; // the second operand is set to the default value of "Operand"
-		document.getElementById("history").innerHTML += "<h2>" + a + b + c + "=" + answer + "<h2>";
+		document.getElementById("story").innerHTML += "<h2>" + a + " " + b + " " + c + " " + "=" + " " + answer + "<h2>";
 		// add an h2 to the history div, which is the last computed operation
 
 	} else { // if all three required inputs for the operation have not been entered
